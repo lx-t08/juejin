@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- jedisCluster配置 -->
+	<bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">
+		<!-- redis集群节点配置 -->
+		<constructor-arg name="jedisClusterNode">
+			<set>
+				<!-- 配置redis节点的主机地址和端口号 -->
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node1.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node1.port}"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node2.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node2.port}"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node3.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node3.port}"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node4.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node4.port}"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node5.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node5.port}"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg name="host" value="${redis.node6.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.node6.port}"></constructor-arg>
+				</bean>
+			</set>
+		</constructor-arg>
+		<!-- 连接redis服务超时时间 -->
+		<constructor-arg name="connectionTimeout"
+			value="${redis.cluster.connectionTimeout}"></constructor-arg>
+		<!-- 向redis发起请求到响应最大超时时间 -->
+		<constructor-arg name="soTimeout" value="${redis.cluster.soTimeout}"></constructor-arg>
+		<!-- 最大尝试重试次数 -->
+		<constructor-arg name="maxAttempts" value="${redis.cluster.maxAttempts}"></constructor-arg>
+		<!-- 连接池配置 -->
+		<constructor-arg name="poolConfig" ref="poolConfig"></constructor-arg>
+	</bean>
+
+	<!-- 连接池配置 -->
+	<bean id="poolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+		<!-- 连接池最大连接个数 -->
+		<property name="maxTotal" value="${redis.cluster.maxTotal}"></property>
+		<!-- 连接池最大空闲连接个数 -->
+		<property name="maxIdle" value="${redis.cluster.maxIdle}"></property>
+		<!-- 连接池最小空闲连接个数 -->
+		<property name="minIdle" value="${redis.cluster.minIdle}"></property>
+	</bean>
+
+</beans>

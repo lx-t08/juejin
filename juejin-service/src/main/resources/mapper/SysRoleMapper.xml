@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qhcs.juejin.dao.SysRoleDao">
+
+	<!-- 根据用户id查询用户角色信息 -->
+	<select id="getSysRoleByUserId" resultType="sysRole">
+		SELECT
+			sr.*
+		FROM
+			t_sys_user su
+		LEFT JOIN t_sys_user_role ur ON su.USER_ID = ur.USER_ID
+		LEFT JOIN t_sys_role sr ON ur.ROLE_ID = sr.ROLE_ID
+		WHERE
+			su.USER_ID = #{userId};
+	</select>
+
+</mapper>

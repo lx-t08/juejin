@@ -1,0 +1,117 @@
+.navbar-default {
+	background-color: white;
+}
+
+.navbar {
+	margin-bottom: 0px;
+}
+
+#logo {
+	margin-top: -10px;
+}
+
+body {
+	background-color: #f4f5f5;
+}
+
+.row {
+	margin-top: 20px;
+}
+
+.topbar {
+	height: 50px;
+}
+
+#topbar-left {
+	float: left;
+	height: 100%;
+	line-height: 50px;
+	padding-left: 20px;
+}
+
+#topbar-right {
+	float: right;
+	height: 100%;
+	line-height: 50px;
+	padding-right: 20px;
+}
+
+.topbar a {
+	text-decoration: none;
+}
+
+.ad {
+	margin-bottom: 20px;
+}
+
+.ad-img {
+	width: 100%;
+}
+
+.white {
+	background: white;
+}
+
+.margin-bottom {
+	margin-bottom: 20px;
+}
+
+.qr-container {
+	height: 80px;
+	background-color: white;
+	margin-bottom: 20px;
+}
+
+#qrCode {
+	padding-top: 15px;
+	padding-left: 15px;
+}
+
+#qrCode img {
+	max-height: 50px;
+	max-width: 50px;
+}
+
+#qrCode-text {
+	padding-top: 15px;
+	padding-right: 15px;
+}
+
+.main-header {
+	padding-bottom: 20px;
+	border-bottom: 1px solid hsla(0,0%,59%,.1);
+}
+
+.main-header a {
+	text-decoration: none;
+}
+
+
+.main-content {
+	border-bottom: 1px solid hsla(0,0%,59%,.1);
+}
+
+.main-content a{
+	text-decoration: none;
+}
+
+.main-content-right {
+	margin-bottom: 15px;
+}
+
+.main-content-right img{
+	max-width: 100%;
+	border: none;
+}
+
+.main-title {
+	
+}
+
+#page {
+	text-align: center;
+}
+
+.pagination {
+	margin: 0 0;
+}

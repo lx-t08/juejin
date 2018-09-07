@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- shiro过滤器，指定哪些资源需要权限验证 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 指定安全管理器 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 指定登陆地址，如果用户未登陆会跳转到该地址 -->
+		<property name="loginUrl" value="/admin/login" />
+		<!-- 指定成功地址，如果用户登陆成功后会跳转到该地址 -->
+		<property name="successUrl" value="/admin/home" />
+		<!-- 指定未授权地址，如果用户访问未授权的资源会跳转到该地址 -->
+		<property name="unauthorizedUrl" value="/admin/login" />
+		<!-- 指定过滤资源，哪些需要权限验证 -->
+		<property name="filterChainDefinitions">
+			<!-- authc指该资源需要授权，anon指该资源不需要授权，先写不需要授权资源再写需要授权的资源 -->
+			<value>
+				/static/js/** = anon
+				/static/css/** = anon
+				/static/images/** = anon
+				/static/include/** = anon
+				/admin/login = anon
+				/admin/doLogin = anon
+				/admin/logout = anon
+				/admin/** = authc
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+	<!-- 安全管理器，shiro核心 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- 指定realm，如果有多个realm则使用realms属性 -->
+		<property name="realm" ref="shiroRealm" />
+		<!-- 指定会话管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 指定缓存管理器 -->
+		<property name="cacheManager" ref="shiroCacheManager" />
+		<!-- 指定rememberMe管理器加密串 -->
+		<property name="rememberMeManager.cipherKey" value="kPH+bIxk5D2deZiIxcaaaA==" />
+	</bean>
+
+	<!-- realm，自定义 -->
+	<bean id="shiroRealm" class="com.qhcs.juejin.common.auth.ShiroRealm"></bean>
+
+	<!-- 会话管理器 -->
+	<bean id="sessionManager"
+		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<!-- session存储的实现 -->
+		<property name="sessionDAO" ref="sessionDAO" />
+		<!-- 全局超时时间 -->
+		<property name="globalSessionTimeout" value="${shiro.globalSessionTimeout}" />
+		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
+		<property name="sessionValidationInterval" value="${shiro.sessionValidationInterval}" />
+		<!-- 是否启用定时清理失效会话 -->
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<!-- session的id名字 -->
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+	</bean>
+
+	<!-- 会话DAO -->
+	<bean id="sessionDAO"
+		class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<!-- 指定ehcache中cache的名字 -->
+		<property name="activeSessionsCacheName" value="shiro-activeSessionCache" />
+		<!-- 会话id生成器 -->
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
+	</bean>
+
+	<!-- 缓存管理器，使用Ehcache实现 -->
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!-- 注入ehcache -->
+		<property name="cacheManager" ref="ehcache" />
+	</bean>
+
+	<!-- sessionIdCookie的实现,用于重写覆盖容器默认的JSESSIONID -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<!-- cookie的name,对应的默认是 JSESSIONID -->
+		<constructor-arg name="name" value="SHAREJSESSIONID" />
+		<!-- jsessionId的path为 / 用于多个系统共享jsessionId -->
+		<!-- <property name="path" value="/qhcs" /> -->
+	</bean>
+
+	<!-- 会话ID生成器 -->
+	<bean id="sessionIdGenerator"
+		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+	<!-- hash凭证匹配器 -->
+	<bean id="hashedCredentialsMatcher"
+		class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<!-- hash算法名字 -->
+		<property name="hashAlgorithmName" value="MD5" />
+		<!-- 是否保存凭证hex值 -->
+		<property name="storedCredentialsHexEncoded" value="true" />
+		<!-- 加密次数 -->
+		<property name="hashIterations" value="1" />
+	</bean>
+
+	<!-- 允许shiro注解，一定要写在最先加载的xml中，写在后面加载的xml中也不起作用 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor" />
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+</beans>

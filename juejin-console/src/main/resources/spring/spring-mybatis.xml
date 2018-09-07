@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+		
+		<!-- 配置sqlSessionFactory -->
+		<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<!-- 设置数据源 -->
+			<property name="dataSource" ref="dataSource"></property>
+			<!-- 设置mybatis配置文件路径 -->
+			<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+			<!-- 设置映射文件路径 -->
+			<property name="mapperLocations" value="classpath:mapper/**/*.xml"></property>
+			<!-- 设置需要别名的实体路径，如果存在多个路径用;隔开 -->
+			<property name="typeAliasesPackage" value="com.qhcs.juejin.entity;com.qhcs.juejin.page"></property>
+		</bean>
+		
+		<!-- 映射扫描配置 -->
+		<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<!-- 设置dao所在的路径，如果存在多个路径用;隔开 -->
+			<property name="basePackage" value="com.qhcs.juejin.dao"></property>
+			<!-- 设置sqlSessionFactory的bean名字，特别主意这是使用value属性不用ref -->
+			<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"></property>
+		</bean>
+        
+</beans>
